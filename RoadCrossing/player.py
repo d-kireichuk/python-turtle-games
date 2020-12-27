@@ -11,9 +11,7 @@ class Player(Turtle):
         self.fillcolor("green")
 
     def reset_position(self):
-        self.hideturtle()
         self.goto(START_POS)
-        self.showturtle()
 
     def go_up(self):
         self.sety(self.ycor() + 10)

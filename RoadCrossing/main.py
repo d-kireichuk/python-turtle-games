@@ -1,6 +1,7 @@
 from turtle import Screen
 from player import Player
 from car import Car
+from car_manager import CarManager
 from scoreboard import ScoreBoard
 import time
 import random
@@ -29,6 +30,7 @@ screen.bgcolor("light grey")
 screen.tracer(0)
 
 player = Player()
+score = ScoreBoard()
 
 # Key bindings
 screen.listen()
@@ -36,39 +38,28 @@ screen.onkeypress(fun=player.go_up, key="w")
 screen.onkeypress(fun=player.go_up, key="Up")
 
 # Car objects initialization
-cars = [Car()]
-car_speed = 0.1
-score = ScoreBoard()
-cars_num = 1
-loop_count = 0
+car_manager = CarManager()
 
-while player.is_alive(cars):
-    # Create a random number of cars
-    loop_count += 1
-    if loop_count == 5:
-        for _ in range(random.randint(0, cars_num)):
-            cars.append(Car())
-        loop_count = 0
+while player.is_alive(car_manager.cars):
+    # Create cars at random
+    car_manager.create_car()
 
-    # Move all cars
+    # Move all the cars
     # Delete a car object if it went past the screen frame
-    for car in cars:
-        car.move()
-        if car.xcor() < -300:
-            car.hideturtle()
-            cars.remove(car)
+    car_manager.move_cars()
 
     # Check if player passed the level
     if player.ycor() >= 280:
         score.level_up()
         player.reset_position()
         # For each next level increase number of cars and car speed
-        car_speed *= 0.95
+        # Add extra cars each 3rd level
+        car_manager.speed *= 0.95
         if score.level % 3 == 0:
-            cars_num += 1
+            car_manager.increase_car_density()
 
     screen.update()
-    time.sleep(car_speed)
+    time.sleep(car_manager.speed)
 
 score.game_over()
 
