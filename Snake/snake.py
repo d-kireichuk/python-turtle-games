@@ -14,7 +14,7 @@ class Snake:
 
     def __init__(self):
         self.snake = []
-        self.create()
+        self.initialize()
         self.head = self.snake[0]
 
     def add_segment(self, position):
@@ -25,7 +25,7 @@ class Snake:
         segment.goto(position)
         self.snake.append(segment)
 
-    def create(self):
+    def initialize(self):
         for position in STARTING_POSITIONS:
             self.add_segment(position)
 
@@ -45,6 +45,13 @@ class Snake:
                 return True
         return False
 
+    def wall_collision(self):
+        abs_x_cor = abs(self.head.xcor())
+        abs_y_cor = abs(self.head.ycor())
+        if abs_x_cor > 270 or abs_y_cor > 270:
+            return True
+        return False
+
     def turn_up(self):
         if self.head.heading() != DOWN:
             self.head.setheading(UP)
@@ -60,3 +67,10 @@ class Snake:
     def turn_left(self):
         if self.head.heading() != RIGHT:
             self.head.setheading(LEFT)
+
+    def reset(self):
+        for segment in self.snake:
+            segment.goto(1000, 1000)
+        self.snake.clear()
+        self.initialize()
+        self.head = self.snake[0]
